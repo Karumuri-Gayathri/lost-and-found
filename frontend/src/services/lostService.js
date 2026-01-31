@@ -1,7 +1,6 @@
 import axios from 'axios';
 
-const backendUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
-
+const backendUrl = 'https://lost-and-found-xm9i.onrender.com'
 const getAuthHeaders = () => {
   const token = localStorage.getItem('token');
   return token ? { Authorization: `Bearer ${token}` } : {};
