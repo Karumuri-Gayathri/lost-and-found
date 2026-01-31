@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+const API_BASE_URL = "https://lost-and-found-xm9i.onrender.com";
 
 // Helper function to handle API calls
 const handleRequest = async (method, url, data = null, options = {}) => {
