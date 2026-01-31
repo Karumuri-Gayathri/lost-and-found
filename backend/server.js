@@ -15,7 +15,7 @@ connectDB();
 const app = express();
 
 app.use(cors({
-  origin: "https://lost-and-found-1-vmv4.onrender.com/lost",
+  origin: "https://lost-and-found-1-vmv4.onrender.com/",
   credentials: true
 }));
 
