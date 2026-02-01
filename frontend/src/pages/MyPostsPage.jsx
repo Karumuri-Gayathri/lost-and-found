@@ -15,14 +15,8 @@ const MyPostsPage = () => {
     const fetchMyPosts = async () => {
       setLoading(true);
       try {
-        const token = localStorage.getItem('token');
-        const backendUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
-        const response = await fetch(backendUrl + '/api/items/user/dashboard', {
-          credentials: 'include',
-          headers: token ? { Authorization: `Bearer ${token}` } : {}
-        });
-        const data = await response.json();
-        setItems(data.data || []);
+        const response = await lostService.getUserDashboard();
+        setItems(response.data.data || []);
       } catch (error) {
         console.error('Error fetching posts:', error);
       } finally {
@@ -37,19 +31,9 @@ const MyPostsPage = () => {
     if (!window.confirm('Are you sure you want to delete this post?')) return;
 
     try {
-      const token = localStorage.getItem('token');
-      const backendUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
-      const response = await fetch(backendUrl + `/api/items/${itemId}`, {
-        method: 'DELETE',
-        credentials: 'include',
-        headers: token ? { Authorization: `Bearer ${token}` } : {}
-      });
-      if (response.ok) {
-        setItems(items.filter(item => item._id !== itemId));
-        alert('Post deleted successfully');
-      } else {
-        alert('Failed to delete post');
-      }
+      await lostService.delete(itemId);
+      setItems(items.filter(item => item._id !== itemId));
+      alert('Post deleted successfully');
     } catch (error) {
       console.error('Error deleting post:', error);
       alert('Failed to delete post');

@@ -29,16 +29,10 @@ const CreateLostItemPage = () => {
       setInitialLoading(true);
       const fetchItem = async () => {
         try {
-          const token = localStorage.getItem('token');
-          const backendUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
-          const response = await fetch(backendUrl + `/api/items/${editItemId}`, {
-            credentials: 'include',
-            headers: token ? { Authorization: `Bearer ${token}` } : {}
-          });
-          const data = await response.json();
+          const response = await lostService.getById(editItemId);
           
-          if (data.data) {
-            const item = data.data;
+          if (response.data.data) {
+            const item = response.data.data;
             setFormData({
               title: item.title || '',
               description: item.description || '',
@@ -113,26 +107,10 @@ const CreateLostItemPage = () => {
         formDataToSend.append('image', imageFile);
       }
 
-      const token = localStorage.getItem('token');
-      const backendUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
-      
-      const endpoint = editItemId 
-        ? `${backendUrl}/api/items/${editItemId}`
-        : `${backendUrl}/api/items`;
-      
-      const method = editItemId ? 'PUT' : 'POST';
-
-      const response = await fetch(endpoint, {
-        method: method,
-        credentials: 'include',
-        headers: token ? { Authorization: `Bearer ${token}` } : {},
-        body: formDataToSend
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Failed to save post');
+      if (editItemId) {
+        await lostService.update(editItemId, formDataToSend);
+      } else {
+        await lostService.create(formDataToSend);
       }
 
       alert(editItemId ? 'Lost item updated successfully!' : 'Lost item posted successfully!');

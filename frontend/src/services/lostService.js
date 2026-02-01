@@ -12,11 +12,13 @@ export const lostService = {
   getById: (id) => 
     axios.get(backendUrl + `/api/items/${id}`, { withCredentials: true, headers: getAuthHeaders() }),
   create: (data) => 
-    axios.post(backendUrl + '/api/items', data, { withCredentials: true, headers: getAuthHeaders() }),
+    axios.post(backendUrl + '/api/items', data, { withCredentials: true, headers: { ...getAuthHeaders(), 'Content-Type': 'multipart/form-data' } }),
   update: (id, data) => 
-    axios.put(backendUrl + `/api/items/${id}`, data, { withCredentials: true, headers: getAuthHeaders() }),
+    axios.put(backendUrl + `/api/items/${id}`, data, { withCredentials: true, headers: { ...getAuthHeaders(), 'Content-Type': 'multipart/form-data' } }),
   delete: (id) => 
     axios.delete(backendUrl + `/api/items/${id}`, { withCredentials: true, headers: getAuthHeaders() }),
   search: (query) => 
     axios.get(backendUrl + '/api/items', { params: { q: query, type: 'lost' }, withCredentials: true, headers: getAuthHeaders() }),
+  getUserDashboard: () =>
+    axios.get(backendUrl + '/api/items/user/dashboard', { withCredentials: true, headers: getAuthHeaders() }),
 };

@@ -1,7 +1,5 @@
 import { createContext, useState, useEffect, useCallback, useRef } from 'react';
-import axios from 'axios';
-
-const backendUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+import { authService } from '../services/authService';
 
 export const AuthContext = createContext();
 
@@ -19,10 +17,7 @@ export const AuthProvider = ({ children }) => {
         const token = localStorage.getItem('token');
         console.log('AuthContext: checkAuth token=', token);
         if (token) {
-          const response = await axios.get(backendUrl + '/api/auth/me', {
-            withCredentials: true,
-            headers: { Authorization: `Bearer ${token}` }
-          });
+          const response = await authService.me();
           const userData = response.data.data || response.data.user;
           console.log('AuthContext: checkAuth got user=', userData?.email);
           setUser(userData);
@@ -38,16 +33,12 @@ export const AuthProvider = ({ children }) => {
     };
 
     checkAuth();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const login = useCallback(async (email, password) => {
     try {
       setError(null);
-      const response = await axios.post(backendUrl + '/api/auth/login', 
-        { email, password },
-        { withCredentials: true }
-      );
+      const response = await authService.login({ email, password });
       // Support multiple response shapes: response.data.token or response.data.data.token
       const rootToken = response.data?.token;
       const userData = response.data?.data || response.data?.user || response.data;
@@ -68,10 +59,7 @@ export const AuthProvider = ({ children }) => {
   const register = useCallback(async (name, email, password, role = 'user') => {
     try {
       setError(null);
-      const response = await axios.post(backendUrl + '/api/auth/register', 
-        { name, email, password, role },
-        { withCredentials: true }
-      );
+      const response = await authService.register({ name, email, password, role });
       const rootToken = response.data?.token;
       const userData = response.data?.data || response.data?.user || response.data;
       const token = rootToken || userData?.token;
@@ -90,9 +78,7 @@ export const AuthProvider = ({ children }) => {
 
   const logout = useCallback(async () => {
     try {
-      await axios.post(backendUrl + '/api/auth/logout', {}, {
-        withCredentials: true,
-      });
+      await authService.logout();
       localStorage.removeItem('token');
       setUser(null);
     } catch (err) {
