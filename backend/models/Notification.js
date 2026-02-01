@@ -26,8 +26,6 @@ const notificationSchema = new mongoose.Schema({
     type: Boolean,                         // Must be true or false
     default: false                         // Start as unread
   },
-  
-  // When the notification was created
   createdAt: {
     type: Date,                            // Must be a date
     default: Date.now                      // Automatically set to current time

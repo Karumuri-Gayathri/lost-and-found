@@ -250,7 +250,6 @@ exports.approveClaim = async (req, res, next) => {
       console.log('✅ Email sent to claimant with owner contact info');
     } catch (emailError) {
       console.error('Failed to send approval email:', emailError);
-      // Don't fail the request if email fails
     }
 
     // SUCCESS RESPONSE
@@ -381,11 +380,6 @@ exports.getMyClaims = async (req, res, next) => {
   }
 };
 
-// ============================================================
-// 6) GET SINGLE CLAIM DETAILS
-// ============================================================
-// GET /api/claims/:claimId
-// Security: Only claimant or item owner can view
 exports.getClaimById = async (req, res, next) => {
   try {
     const { claimId } = req.params;
